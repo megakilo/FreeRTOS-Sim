@@ -90,9 +90,6 @@
  * displaying are posted.  It will therefore only block for the full 5 seconds
  * if no messages are posted onto the queue.
  *
- * Main. c also provides a demonstration of how the trace visualisation utility
- * can be used, and how the scheduler can be stopped.
- *
  * \page MainC main.c
  * \ingroup DemoFiles
  * <HR>
@@ -100,6 +97,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "croutine.h"
@@ -148,16 +146,6 @@ static void vErrorChecks( void *pvParameters );
 the top of the file. */
 static void prvCheckOtherTasksAreStillRunning( void );
 
-/* Key presses can be used to start/stop the trace visualisation utility or stop
-the scheduler. */
-static void	prvCheckForKeyPresses( void );
-
-/* Buffer used by the trace visualisation utility so only needed if the trace
-being used. */
-#if configUSE_TRACE_FACILITY == 1
-	static char pcWriteBuffer[ mainDEBUG_LOG_BUFFER_SIZE ];
-#endif
-
 /* Constant definition used to turn on/off the pre-emptive scheduler. */
 static const short sUsingPreemption = configUSE_PREEMPTION;
 
@@ -194,14 +182,14 @@ int main( void )
 	vStartGenericQueueTasks( mainGENERIC_QUEUE_PRIORITY );
 	vStartQueuePeekTasks();
 	vStartCountingSemaphoreTasks();
-	//vStartRecursiveMutexTasks();
+	vStartRecursiveMutexTasks();
 
 	/* Create the "Print" task as described at the top of the file. */
 	xTaskCreate( vErrorChecks, "Print", mainPRINT_STACK_SIZE, NULL, mainPRINT_TASK_PRIORITY, NULL );
 
 	// This task has to be created last as it keeps account of the number of tasks
 	// it expects to see running.
-	vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
+	//vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
 
 	/* Set the scheduler running.  This function will not return unless a task
 	calls vTaskEndScheduler(). */
@@ -312,58 +300,6 @@ const char * const pcUnexpectedHookValueMsg = "Task hook has unexpected value!\r
 			for printing. */
 			vDisplayMessage( pcReceivedMessage );
 		}
-
-		/* Key presses are used to invoke the trace visualisation utility, or end
-		the program. */
-		prvCheckForKeyPresses();
-	}
-}
-/*-----------------------------------------------------------*/
-
-static void	prvCheckForKeyPresses( void )
-{
-short sIn;
-
-	taskENTER_CRITICAL();
-		#ifdef DEBUG_BUILD
-			/* kbhit can be used in .exe's that are executed from the command
-			line, but not if executed through the debugger. */
-			sIn = 0;
-		#else
-			//sIn = kbhit();
-			sIn = 0;
-		#endif
-	taskEXIT_CRITICAL();
-
-	if( sIn )
-	{
-		/* Key presses can be used to start/stop the trace utility, or end the
-		program. */
-		//sIn = getch();
-		switch( sIn )
-		{
-			/* Only define keys for turning on and off the trace if the trace
-			is being used. */
-			#if configUSE_TRACE_FACILITY == 1
-				case 't' :	vTaskList( pcWriteBuffer );
-							vWriteMessageToDisk( pcWriteBuffer );
-							break;
-				/* The legacy trace is no longer supported.  Use FreeRTOS+Trace instead
-				case 's' :	vTaskStartTrace( pcWriteBuffer, mainDEBUG_LOG_BUFFER_SIZE );
-							break;
-
-				case 'e' :	{
-								unsigned long ulBufferLength;
-								ulBufferLength = ulTaskEndTrace();
-								vWriteBufferToDisk( pcWriteBuffer, ulBufferLength );
-							}
-							break;
-				*/
-			#endif
-
-			default  :	vTaskEndScheduler();
-						break;
-		}
 	}
 }
 /*-----------------------------------------------------------*/
@@ -392,11 +328,13 @@ static unsigned long long uxLastQueueSendCount = 0;
 		sErrorHasOccurred = pdTRUE;
 	}
     
+    /*
 	if( xIsCreateTaskStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Incorrect number of tasks running!\r\n" );
 		sErrorHasOccurred = pdTRUE;
 	}
+    */
 
 	if( xAreSemaphoreTasksStillRunning() != pdTRUE )
 	{
@@ -452,13 +390,11 @@ static unsigned long long uxLastQueueSendCount = 0;
 		sErrorHasOccurred = pdTRUE;
 	}
 
-    /*
 	if( xAreRecursiveMutexTasksStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Error in recursive mutex tasks!\r\n" );
 		sErrorHasOccurred = pdTRUE;
 	}
-    */
 
 	/* The hook function associated with this task is called each time the task
 	is switched in.  We therefore expect the number of times the callback

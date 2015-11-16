@@ -94,7 +94,9 @@ CWARNS += -Wmissing-prototypes
 CFLAGS += -m32
 CFLAGS += -DDEBUG=1
 CFLAGS += -g -pthread -DUSE_STDIO=1 -D__GCC_POSIX__=1
-# Max number of pthreads count. Default value is the dated _POSIX_THREAD_THREADS_MAX which is 64.
+
+# MAX_NUMBER_OF_TASKS = max pthreads used in the POSIX port. 
+# Default value is 64 (_POSIX_THREAD_THREADS_MAX), the minimum number required by POSIX.
 CFLAGS += -DMAX_NUMBER_OF_TASKS=300
 
 CFLAGS += $(INCLUDES) $(CWARNS) -O2
