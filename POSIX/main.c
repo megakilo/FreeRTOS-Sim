@@ -178,24 +178,22 @@ int main( void )
 	vPrintInitialise();
 
 	/* CREATE ALL THE DEMO APPLICATION TASKS. */
-	/*
 	vStartMathTasks( tskIDLE_PRIORITY );
 	vStartBlockingQueueTasks( mainQUEUE_BLOCK_PRIORITY );
 	vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-	*/
-
 	vStartSemaphoreTasks( mainSEMAPHORE_TASK_PRIORITY );
-	//vStartDynamicPriorityTasks();
-	//vStartMultiEventTasks();
+	vStartDynamicPriorityTasks();
+	vStartMultiEventTasks();
+
 	// Create the co-routines that flash the LED's.
-	//vStartFlashCoRoutines( mainNUM_FLASH_CO_ROUTINES );
+	vStartFlashCoRoutines( mainNUM_FLASH_CO_ROUTINES );
 	// Create the co-routines that communicate with the tick hook.
 	vStartHookCoRoutines();
-    /*
+
 	vCreateBlockTimeTasks();
 	vStartGenericQueueTasks( mainGENERIC_QUEUE_PRIORITY );
 	vStartQueuePeekTasks();
-	vStartCountingSemaphoreTasks();*/
+	vStartCountingSemaphoreTasks();
 	//vStartRecursiveMutexTasks();
 
 	/* Create the "Print" task as described at the top of the file. */
@@ -374,9 +372,8 @@ static void prvCheckOtherTasksAreStillRunning( void )
 {
 static short sErrorHasOccurred = pdFALSE;
 static unsigned long long uxLastHookCallCount = 0;
-//static unsigned long long uxLastQueueSendCount = 0;
+static unsigned long long uxLastQueueSendCount = 0;
 
-    /*
 	if( xAreMathsTaskStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Maths task count unchanged!\r\n" );
@@ -394,13 +391,13 @@ static unsigned long long uxLastHookCallCount = 0;
 		vDisplayMessage( "Polling queue count unchanged!\r\n" );
 		sErrorHasOccurred = pdTRUE;
 	}
-     */
+    
 	if( xIsCreateTaskStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Incorrect number of tasks running!\r\n" );
 		sErrorHasOccurred = pdTRUE;
 	}
-/*
+
 	if( xAreSemaphoreTasksStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Semaphore take count unchanged!\r\n" );
@@ -424,7 +421,6 @@ static unsigned long long uxLastHookCallCount = 0;
 		vDisplayMessage( "Error in co-routine flash tasks!\r\n" );
 		sErrorHasOccurred = pdTRUE;
 	}
-    */
 
 	if( xAreHookCoRoutinesStillRunning() != pdTRUE )
 	{
@@ -432,7 +428,6 @@ static unsigned long long uxLastHookCallCount = 0;
 		sErrorHasOccurred = pdTRUE;
 	}
 
-    /*
 	if( xAreBlockTimeTestTasksStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Error in block time test tasks!\r\n" );
@@ -456,7 +451,6 @@ static unsigned long long uxLastHookCallCount = 0;
 		vDisplayMessage( "Error in counting semaphore demo task!\r\n" );
 		sErrorHasOccurred = pdTRUE;
 	}
-*/
 
     /*
 	if( xAreRecursiveMutexTasksStillRunning() != pdTRUE )
@@ -484,7 +478,6 @@ static unsigned long long uxLastHookCallCount = 0;
 
 	/* We would expect some queue sending to occur between calls of this
 	function. */
-    /*
 	if( uxQueueSendPassedCount <= uxLastQueueSendCount )
 	{
 		vDisplayMessage( "Error in queue send hook call count!\r\n" );
@@ -494,7 +487,6 @@ static unsigned long long uxLastHookCallCount = 0;
 	{
 		uxLastQueueSendCount = uxQueueSendPassedCount;
 	}
-    */
 
 	if( sErrorHasOccurred == pdFALSE )
 	{

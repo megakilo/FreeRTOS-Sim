@@ -1,5 +1,6 @@
 # FreeRTOS-Sim
 FreeRTOS simulator for POSIX
 
-The default Makefile builds demo tasks under /Demo.
-Changing "demo" to 0 in the Makefile will build the barebone FreeRTOS system with the main() under /Project. 
+- Demo: builtin demo tasks from FreeRTOS
+- Source: FreeRTOS and POSIX simulator source files
+- POSIX: main entry and FreeRTOS settings for the POSIX port

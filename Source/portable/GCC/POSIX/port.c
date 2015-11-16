@@ -70,8 +70,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 /*-----------------------------------------------------------*/
-
+#ifndef MAX_NUMBER_OF_TASKS
 #define MAX_NUMBER_OF_TASKS 		( _POSIX_THREAD_THREADS_MAX )
+#endif
 /*-----------------------------------------------------------*/
 
 /* Parameters to pass to the newly created pthread. */

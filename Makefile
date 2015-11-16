@@ -1,8 +1,8 @@
-# Build options
-###############################
+######## Build options ########
+
 verbose = 0
-demo = 1
-###############################
+
+######## Build setup ########
 
 # SRCROOT should always be the current directory
 SRCROOT         = $(CURDIR)
@@ -14,17 +14,11 @@ ODIR            = obj
 VPATH           += $(SRCROOT)/Source
 VPATH	        += $(SRCROOT)/Source/portable/MemMang
 VPATH	        += $(SRCROOT)/Source/portable/GCC/POSIX
-ifeq ($(demo),1)
 VPATH           += $(SRCROOT)/Demo/Common/Full
 VPATH           += $(SRCROOT)/Demo/Common/Minimal
-VPATH			+= $(SRCROOT)/Demo/POSIX/FileIO
-VPATH			+= $(SRCROOT)/Demo/POSIX/ParTest
-VPATH			+= $(SRCROOT)/Demo/POSIX
-else
-VPATH			+= $(SRCROOT)/Project
-VPATH			+= $(SRCROOT)/Project/FileIO
-VPATH			+= $(SRCROOT)/Project/ParTest
-endif
+VPATH			+= $(SRCROOT)/POSIX/FileIO
+VPATH			+= $(SRCROOT)/POSIX/ParTest
+VPATH			+= $(SRCROOT)/POSIX
 
 # FreeRTOS Objects
 C_FILES			+= croutine.c
@@ -38,7 +32,6 @@ C_FILES			+= timers.c
 C_FILES			+= heap_3.c
 C_FILES			+= port.c
 
-ifeq ($(demo),1)
 # Minimal Demo Objects
 C_FILES			+= blocktim.c
 C_FILES			+= countsem.c
@@ -62,7 +55,6 @@ C_FILES			+= semtest.c
 # IO objects
 C_FILES			+= fileIO.c
 C_FILES			+= ParTest.c
-endif
 
 # Main Object
 C_FILES			+= main.c
@@ -70,45 +62,44 @@ C_FILES			+= main.c
 # Include Paths
 INCLUDES        += -I$(SRCROOT)/Source/include
 INCLUDES        += -I$(SRCROOT)/Source/portable/GCC/POSIX/
-ifeq ($(demo),1)
 INCLUDES        += -I$(SRCROOT)/Demo/Common/include
-INCLUDES        += -I$(SRCROOT)/Demo/POSIX
-else
-INCLUDES        += -I$(SRCROOT)/Project
-endif
+INCLUDES        += -I$(SRCROOT)/POSIX
 
 # Generate OBJS names
 OBJS = $(patsubst %.c,%.o,$(C_FILES))
 
-# C Flags
+######## C Flags ########
+
+# Warnings
+CWARNS += -W
+CWARNS += -Wall
+CWARNS += -Werror
+CWARNS += -Wextra
+CWARNS += -Wformat
+CWARNS += -Wmissing-braces
+CWARNS += -Wno-cast-align
+CWARNS += -Wparentheses
+CWARNS += -Wshadow
+CWARNS += -Wno-sign-compare
+CWARNS += -Wswitch
+CWARNS += -Wuninitialized
+CWARNS += -Wunknown-pragmas
+CWARNS += -Wunused-function
+CWARNS += -Wunused-label
+CWARNS += -Wunused-parameter
+CWARNS += -Wunused-value
+CWARNS += -Wunused-variable
+CWARNS += -Wmissing-prototypes
+
 CFLAGS += -m32
 CFLAGS += -DDEBUG=1
 CFLAGS += -g -pthread -DUSE_STDIO=1 -D__GCC_POSIX__=1
+# Max number of pthreads count. Default value is the dated _POSIX_THREAD_THREADS_MAX which is 64.
+CFLAGS += -DMAX_NUMBER_OF_TASKS=300
 
-# Warnings
-COMMON_WARNINGS += -W
-COMMON_WARNINGS += -Wall
-COMMON_WARNINGS += -Werror
-COMMON_WARNINGS += -Wextra
-COMMON_WARNINGS += -Wformat
-COMMON_WARNINGS += -Wmissing-braces
-COMMON_WARNINGS += -Wno-cast-align
-COMMON_WARNINGS += -Wparentheses
-COMMON_WARNINGS += -Wshadow
-COMMON_WARNINGS += -Wno-sign-compare
-COMMON_WARNINGS += -Wswitch
-COMMON_WARNINGS += -Wuninitialized
-COMMON_WARNINGS += -Wunknown-pragmas
-COMMON_WARNINGS += -Wunused-function
-COMMON_WARNINGS += -Wunused-label
-COMMON_WARNINGS += -Wunused-parameter
-COMMON_WARNINGS += -Wunused-value
-COMMON_WARNINGS += -Wunused-variable
+CFLAGS += $(INCLUDES) $(CWARNS) -O2
 
-CWARNS          += $(COMMON_WARNINGS)
-CWARNS          += -Wmissing-prototypes
-
-CFLAGS          += $(INCLUDES) $(COMMONFLAGS) $(CWARNS) -O2
+######## Makefile targets ########
 
 # Rules
 .PHONY : all
