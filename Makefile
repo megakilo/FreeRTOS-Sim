@@ -93,7 +93,10 @@ CWARNS += -Wmissing-prototypes
 
 CFLAGS += -m32
 CFLAGS += -DDEBUG=1
-CFLAGS += -g -pthread -DUSE_STDIO=1 -D__GCC_POSIX__=1
+CFLAGS += -g -DUSE_STDIO=1 -D__GCC_POSIX__=1
+ifneq ($(shell uname), Darwin)
+CFLAGS += -pthread
+endif
 
 # MAX_NUMBER_OF_TASKS = max pthreads used in the POSIX port. 
 # Default value is 64 (_POSIX_THREAD_THREADS_MAX), the minimum number required by POSIX.
