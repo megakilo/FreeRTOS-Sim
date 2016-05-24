@@ -1,9 +1,9 @@
 # FreeRTOS-Sim
-FreeRTOS simulator for POSIX (Linux, Mac OS X or some OS with pthread and signal support)
+FreeRTOS simulator for POSIX (Linux, OS X or maybe other POSIX OS with pthread & signal support)
 
-The original simulator is developed by William Davy for FreeRTOS v5.3 included in the FreeRTOS package. I'm trying to keep the simulator working with the new FreeRTOS release as much as possible. Current FreeRTOS kernel version I have tested is v8.2.2 included in this repo.
+This work is based on the original simulator developed by William Davy for FreeRTOS v5.3 extracted from the official FreeRTOS release. The goal of the work is to make FreeRTOS simulator a seperate package that is easy to build & use and also to keep the simulator updated with newer FreeRTOS releases (v8.2.2 is the latest kernel tested and included in the repo).
 
 Directory description
-- Demo: builtin demo tasks from FreeRTOS
 - Source: FreeRTOS kernel and POSIX simulator source files
-- POSIX: main file and FreeRTOS settings header for the POSIX port
+- POSIX: the project directory that includes main() and FreeRTOS settings for the POSIX port
+- Demo: tested builtin demo tasks from the official FreeRTOS release
