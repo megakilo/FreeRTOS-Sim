@@ -42,11 +42,7 @@ C_FILES			+= dynamic.c
 C_FILES			+= flop.c
 C_FILES			+= integer.c
 C_FILES			+= PollQ.c
-C_FILES			+= print.c
 C_FILES			+= semtest.c
-
-# IO objects
-C_FILES			+= fileIO.c
 
 # Main Object
 C_FILES			+= main.c
@@ -82,6 +78,8 @@ CWARNS += -Wunused-parameter
 CWARNS += -Wunused-value
 CWARNS += -Wunused-variable
 CWARNS += -Wmissing-prototypes
+
+#CWARNS += -Wno-unused-function
 
 CFLAGS += -m32
 CFLAGS += -DDEBUG=1

@@ -28,7 +28,7 @@
 #define configUSE_RECURSIVE_MUTEXES		1
 //#define configQUEUE_REGISTRY_SIZE		0
 #define configQUEUE_REGISTRY_SIZE				20
-#define configUSE_MALLOC_FAILED_HOOK			0
+#define configUSE_MALLOC_FAILED_HOOK			1
 
 #define configUSE_APPLICATION_TASK_TAG	1
 #define configUSE_COUNTING_SEMAPHORES	1
@@ -47,14 +47,6 @@
 #define configMAX_PRIORITIES		( 10 )
 
 #define configGENERATE_RUN_TIME_STATS		1
-
-/* Co-routine related configuration options. */
-#define configUSE_CO_ROUTINES 			1
-#define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
-
-
-/* Set the following definitions to 1 to include the API function, or zero
-to exclude the API function. */
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function.  In most cases the linker will remove unused
@@ -76,10 +68,9 @@ functions anyway. */
 #define INCLUDE_xSemaphoreGetMutexHolder		1
 #define INCLUDE_xTimerPendFunctionCall			1
 
-/* An example "task switched in" hook macro definition. */
-#define traceTASK_SWITCHED_IN() xTaskCallApplicationTaskHook( NULL, ( void * ) 0xabcd )
-
-extern void vMainQueueSendPassed( void );
-#define traceQUEUE_SEND( pxQueue ) vMainQueueSendPassed()
+/* It is a good idea to define configASSERT() while developing.  configASSERT()
+uses the same semantics as the standard C assert() macro. */
+extern void vAssertCalled( unsigned long ulLine, const char * const pcFileName );
+#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __LINE__, __FILE__ )
 
 #endif /* FREERTOS_CONFIG_H */
