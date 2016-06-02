@@ -100,22 +100,17 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "croutine.h"
-#include "partest.h"
 
 /* Demo file headers. */
 #include "BlockQ.h"
 #include "blocktim.h"
 #include "countsem.h"
-#include "crflash.h"
-#include "crhook.h"
 #include "death.h"
 #include "dynamic.h"
 #include "fileIO.h"
 #include "flop.h"
 #include "GenQTest.h"
 #include "integer.h"
-#include "mevents.h"
 #include "PollQ.h"
 #include "print.h"
 #include "QPeek.h"
@@ -162,7 +157,6 @@ static unsigned long long uxQueueSendPassedCount = 0;
 int main( void )
 {
 	/* Initialise hardware and utilities. */
-	vParTestInitialise();
 	vPrintInitialise();
 
 	/* CREATE ALL THE DEMO APPLICATION TASKS. */
@@ -171,12 +165,6 @@ int main( void )
 	vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
 	vStartSemaphoreTasks( mainSEMAPHORE_TASK_PRIORITY );
 	vStartDynamicPriorityTasks();
-	vStartMultiEventTasks();
-
-	// Create the co-routines that flash the LED's.
-	vStartFlashCoRoutines( mainNUM_FLASH_CO_ROUTINES );
-	// Create the co-routines that communicate with the tick hook.
-	vStartHookCoRoutines();
 
 	vCreateBlockTimeTasks();
 	vStartGenericQueueTasks( mainGENERIC_QUEUE_PRIORITY );
@@ -348,24 +336,6 @@ static unsigned long long uxLastQueueSendCount = 0;
 		sErrorHasOccurred = pdTRUE;
 	}
 
-	if( xAreMultiEventTasksStillRunning() != pdTRUE )
-	{
-		vDisplayMessage( "Error in multi events tasks!\r\n" );
-		sErrorHasOccurred = pdTRUE;
-	}
-
-	if( xAreFlashCoRoutinesStillRunning() != pdTRUE )
-	{
-		vDisplayMessage( "Error in co-routine flash tasks!\r\n" );
-		sErrorHasOccurred = pdTRUE;
-	}
-
-	if( xAreHookCoRoutinesStillRunning() != pdTRUE )
-	{
-		vDisplayMessage( "Error in tick hook to co-routine communications!\r\n" );
-		sErrorHasOccurred = pdTRUE;
-	}
-
 	if( xAreBlockTimeTestTasksStillRunning() != pdTRUE )
 	{
 		vDisplayMessage( "Error in block time test tasks!\r\n" );
@@ -433,8 +403,5 @@ static unsigned long long uxLastQueueSendCount = 0;
 
 void vApplicationIdleHook( void )
 {
-	/* The co-routines are executed in the idle task using the idle task
-	hook. */
-	vCoRoutineSchedule();
 }
 /*-----------------------------------------------------------*/
