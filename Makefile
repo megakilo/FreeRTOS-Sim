@@ -16,9 +16,9 @@ VPATH	        += $(SRCROOT)/Source/portable/MemMang
 VPATH	        += $(SRCROOT)/Source/portable/GCC/POSIX
 VPATH           += $(SRCROOT)/Demo/Common/Full
 VPATH           += $(SRCROOT)/Demo/Common/Minimal
-VPATH			+= $(SRCROOT)/POSIX/FileIO
-VPATH			+= $(SRCROOT)/POSIX/ParTest
-VPATH			+= $(SRCROOT)/POSIX
+VPATH			+= $(SRCROOT)/Project/FileIO
+VPATH			+= $(SRCROOT)/Project/ParTest
+VPATH			+= $(SRCROOT)/Project
 
 # FreeRTOS Objects
 C_FILES			+= croutine.c
@@ -63,7 +63,7 @@ C_FILES			+= main.c
 INCLUDES        += -I$(SRCROOT)/Source/include
 INCLUDES        += -I$(SRCROOT)/Source/portable/GCC/POSIX/
 INCLUDES        += -I$(SRCROOT)/Demo/Common/include
-INCLUDES        += -I$(SRCROOT)/POSIX
+INCLUDES        += -I$(SRCROOT)/Project
 
 # Generate OBJS names
 OBJS = $(patsubst %.c,%.o,$(C_FILES))
