@@ -44,6 +44,15 @@ C_FILES			+= integer.c
 C_FILES			+= PollQ.c
 C_FILES			+= semtest.c
 
+C_FILES			+= AbortDelay.c
+C_FILES			+= EventGroupsDemo.c
+C_FILES			+= IntSemTest.c
+C_FILES			+= QueueSet.c
+C_FILES			+= QueueSetPolling.c
+C_FILES			+= QueueOverwrite.c
+C_FILES			+= TaskNotify.c
+C_FILES			+= TimerDemo.c
+
 # Main Object
 C_FILES			+= main.c
 
