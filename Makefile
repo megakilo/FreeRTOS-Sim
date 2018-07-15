@@ -146,3 +146,8 @@ clean:
 	@echo "--------------"
 	@echo "CLEAN COMPLETE"
 	@echo "--------------"
+
+
+.PHONY: valgrind
+valgrind: FreeRTOS-Sim
+	valgrind.bin --tool=memcheck --leak-check=full --show-reachable=yes --track-fds=yes ./FreeRTOS-Sim
