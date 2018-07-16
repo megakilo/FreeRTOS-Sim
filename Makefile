@@ -14,7 +14,7 @@ ODIR            = obj
 VPATH           += $(SRCROOT)/Source
 VPATH	        += $(SRCROOT)/Source/portable/MemMang
 VPATH	        += $(SRCROOT)/Source/portable/GCC/POSIX
-VPATH           += $(SRCROOT)/Demo
+VPATH           += $(SRCROOT)/Demo/Common
 VPATH			+= $(SRCROOT)/Project/FileIO
 VPATH			+= $(SRCROOT)/Project
 
@@ -31,27 +31,28 @@ C_FILES			+= heap_3.c
 C_FILES			+= port.c
 
 # Demo Objects
-C_FILES			+= blocktim.c
-C_FILES			+= countsem.c
-C_FILES			+= GenQTest.c
-C_FILES			+= QPeek.c
-C_FILES			+= recmutex.c
-C_FILES			+= BlockQ.c
-C_FILES			+= death.c
-C_FILES			+= dynamic.c
-C_FILES			+= flop.c
-C_FILES			+= integer.c
-C_FILES			+= PollQ.c
-C_FILES			+= semtest.c
+C_FILES			+= Minimal/blocktim.c
+C_FILES			+= Minimal/countsem.c
+C_FILES			+= Minimal/GenQTest.c
+C_FILES			+= Minimal/QPeek.c
+C_FILES			+= Minimal/recmutex.c
+C_FILES			+= Full/BlockQ.c
+C_FILES			+= Full/death.c
+C_FILES			+= Full/dynamic.c
+C_FILES			+= Full/flop.c
+C_FILES			+= Full/integer.c
+C_FILES			+= Full/PollQ.c
+C_FILES			+= Full/semtest.c
+C_FILES			+= Full/print.c
 
-C_FILES			+= AbortDelay.c
-C_FILES			+= EventGroupsDemo.c
-C_FILES			+= IntSemTest.c
-C_FILES			+= QueueSet.c
-C_FILES			+= QueueSetPolling.c
-C_FILES			+= QueueOverwrite.c
-C_FILES			+= TaskNotify.c
-C_FILES			+= TimerDemo.c
+C_FILES			+= Minimal/AbortDelay.c
+C_FILES			+= Minimal/EventGroupsDemo.c
+C_FILES			+= Minimal/IntSemTest.c
+C_FILES			+= Minimal/QueueSet.c
+C_FILES			+= Minimal/QueueSetPolling.c
+C_FILES			+= Minimal/QueueOverwrite.c
+C_FILES			+= Minimal/TaskNotify.c
+C_FILES			+= Minimal/TimerDemo.c
 
 # Main Object
 C_FILES			+= main.c
@@ -59,7 +60,7 @@ C_FILES			+= main.c
 # Include Paths
 INCLUDES        += -I$(SRCROOT)/Source/include
 INCLUDES        += -I$(SRCROOT)/Source/portable/GCC/POSIX/
-INCLUDES        += -I$(SRCROOT)/Demo/include
+INCLUDES        += -I$(SRCROOT)/Demo/Common/include
 INCLUDES        += -I$(SRCROOT)/Project
 
 # Generate OBJS names
@@ -108,17 +109,14 @@ CFLAGS += $(INCLUDES) $(CWARNS) -O2
 
 # Rules
 .PHONY : all
-all: setup FreeRTOS-Sim
+all: FreeRTOS-Sim
 
-.PHONY : setup
-setup:
-# Make obj directory
-	@mkdir -p $(ODIR)
 
 # Fix to place .o files in ODIR
 _OBJS = $(patsubst %,$(ODIR)/%,$(OBJS))
 
 $(ODIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 # If verbose, print gcc execution, else hide
 ifeq ($(verbose),1)
 	@echo ">> Compiling $<"
