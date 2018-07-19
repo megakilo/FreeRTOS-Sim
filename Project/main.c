@@ -89,6 +89,8 @@
 /* Standard includes. */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <signal.h>
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -143,12 +145,19 @@ static void prvCheckTask( void *pvParameters );
 /* The variable into which error messages are latched. */
 static char *pcStatusMessage = "OK";
 
+static bool bExiting = false;
+
+
+static void vExitSignal(int iSig);
+
+
 /*-----------------------------------------------------------*/
 
 int main ( void )
 {
+        TaskHandle_t xTask;
 	/* Start the check task as described at the top of this file. */
-	xTaskCreate( prvCheckTask, "Check", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
+	xTaskCreate( prvCheckTask, "Check", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, &xTask );
 
 	/* Create the standard demo tasks. */
 	vStartIntegerMathTasks( mainINTEGER_TASK_PRIORITY );
@@ -184,12 +193,22 @@ int main ( void )
 	any given time. */
 	vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
 
+	signal(SIGINT, vExitSignal);
+
 	/* Start the scheduler itself. */
 	vTaskStartScheduler();
 
-	/* Should never get here unless there was not enough heap space to create
-	the idle and other system tasks. */
+	vTaskDelete(xTask);
+
 	return 0;
+}
+
+
+/*-----------------------------------------------------------*/
+static void vExitSignal(int iSig)
+{
+	if (iSig == SIGINT)
+		bExiting = true;
 }
 /*-----------------------------------------------------------*/
 
@@ -208,6 +227,9 @@ const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
 	{
 		/* Place this task in the blocked state until it is time to run again. */
 		vTaskDelayUntil( &xNextWakeTime, xCycleFrequency );
+
+		if (bExiting)
+			vTaskEndScheduler();
 
 		/* Check the standard demo tasks are running without error. */
 		#if( configUSE_PREEMPTION != 0 )
